@@ -1,10 +1,7 @@
 package org.library.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.util.List;
 
@@ -27,6 +24,8 @@ public class Person {
     @Column(name = "year_of_birth")
     @Min(value = YEAROFBIRTH_LOWERBOUND, message = "Year of birth cannot be less than 1900.")
 //    @Pattern(regexp = "\\d{4}", message = "Date if birth should have 4 digits.")
+//    @NotEmpty(message = "Year of birth cannot be empty")
+//    @NotBlank(message = "Year of birth cannot be blank")
     private int yearOfBirth;
 
     @OneToMany(mappedBy = "owner")
@@ -69,5 +68,13 @@ public class Person {
 
     public void setBooks(List<Book> books) {
         this.books = books;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "initials='" + initials + '\'' +
+                ", yearOfBirth=" + yearOfBirth +
+                '}';
     }
 }

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.library.dao.PersonDAO;
 import org.library.models.Person;
 import org.library.services.PeopleService;
+import org.library.util.PersonSearchValidator;
 import org.library.util.PersonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,12 +19,14 @@ public class PeopleController {
 
     private final PeopleService peopleService;
     private final PersonValidator personValidator;
+    private final PersonSearchValidator personSearchValidator;
 
     @Autowired
-    public PeopleController(PersonDAO personDAO, PeopleService peopleService, PersonValidator personValidator) {
+    public PeopleController(PersonDAO personDAO, PeopleService peopleService, PersonValidator personValidator, PersonSearchValidator personSearchValidator) {
 //        this.personDAO = personDAO;
         this.peopleService = peopleService;
         this.personValidator = personValidator;
+        this.personSearchValidator = personSearchValidator;
     }
 
     @GetMapping()
@@ -90,5 +93,24 @@ public class PeopleController {
 //        personDAO.deletePersonById(id);
         peopleService.deleteById(id);
         return "redirect:/people";
+    }
+
+    @GetMapping("/search")
+    public String searchPage(@ModelAttribute("person") Person person){
+        return "people/search";
+    }
+
+    @PostMapping("/search")
+    public String lookForPerson(@ModelAttribute("person") Person person,
+                                      BindingResult bindingResult,
+                                      Model model){
+
+        personSearchValidator.validate(person, bindingResult);
+
+        if(bindingResult.hasErrors())
+            return "people/search";
+
+        model.addAttribute("people", peopleService.findPerson(person));
+        return "people/search";
     }
 }

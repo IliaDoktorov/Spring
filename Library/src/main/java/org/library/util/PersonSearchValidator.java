@@ -1,6 +1,5 @@
 package org.library.util;
 
-import org.library.dao.PersonDAO;
 import org.library.models.Person;
 import org.library.repositories.PeopleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +8,11 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 @Component
-public class PersonValidator implements Validator {
+public class PersonSearchValidator implements Validator {
     private final PeopleRepository peopleRepository;
+
     @Autowired
-    public PersonValidator(PeopleRepository peopleRepository) {
+    public PersonSearchValidator(PeopleRepository peopleRepository) {
         this.peopleRepository = peopleRepository;
     }
 
@@ -25,12 +25,10 @@ public class PersonValidator implements Validator {
     public void validate(Object target, Errors errors) {
         Person person = (Person) target;
 
-        if(peopleRepository.findByInitials(person.getInitials()).isPresent()){
-            errors.rejectValue("initials", "", "Person with these Initials already exist!");
-        }
+        if(person.getInitials().isEmpty())
+            errors.rejectValue("initials","", "Initials cannot be empty!");
 
-        if(person.getYearOfBirth() < Person.YEAROFBIRTH_LOWERBOUND){
-            errors.rejectValue("yearOfBirth", "", "Year of birth cannot be less than 1900!");
-        }
+        if(person.getYearOfBirth() < Person.YEAROFBIRTH_LOWERBOUND)
+            errors.rejectValue("yearOfBirth", "", "Year of birth cannot be less than 1900");
     }
 }

@@ -20,7 +20,9 @@ public class PeopleService {
     }
 
     public List<Person> findAll(){
-        return peopleRepository.findAll();
+        List<Person> people = peopleRepository.findAll();
+        people.forEach(person -> Hibernate.initialize(person.getBooks()));
+        return people;
     }
 
     public Person findById(int id){
@@ -45,5 +47,10 @@ public class PeopleService {
     public void deleteById(int id){
         peopleRepository.deleteById(id);
 //        peopleRepository.delete(person);
+    }
+
+    @Transactional
+    public List<Person> findPerson(Person person){
+        return peopleRepository.findByInitialsContainingIgnoreCaseOrYearOfBirth(person.getInitials(), person.getYearOfBirth());
     }
 }
