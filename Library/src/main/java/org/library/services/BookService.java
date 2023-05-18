@@ -49,4 +49,9 @@ public class BookService {
     @Transactional(readOnly = false)
     public void reserveBook(int bookId, int id) {
     }
+
+    public List<Book> findByQuery(String query) {
+        // use single query to search in author and title
+        return booksRepository.findByTitleContainsIgnoreCaseOrAuthorContainsIgnoreCase(query, query);
+    }
 }

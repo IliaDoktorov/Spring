@@ -14,11 +14,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller()
 @RequestMapping("/books")
 public class BooksController {
-//    private final BookDAO bookDAO;
-//    private final PersonDAO personDAO;
 
     private final BookValidator bookValidator;
     private final BookService bookService;
@@ -53,7 +53,7 @@ public class BooksController {
 
         // if book is vacant, get and populate person list to display in drop-don list
         if(personByBook == null){
-            model.addAttribute("people", peopleService.findAll());
+            model.addAttribute("people", peopleService.findAll(false));
         }
 
         return "books/show";
@@ -126,4 +126,18 @@ public class BooksController {
         bookService.reserveBook(bookId,person.getId());
         return showBookPage(bookId, model, person);
     }
+
+    @GetMapping("/search")
+    public String searchPage(){
+        return "books/search";
+    }
+
+    @GetMapping("/search-book")
+    public String lookForBook(@RequestParam("query") String query,
+                              Model model){
+        List<Book> books = bookService.findByQuery(query);
+        model.addAttribute("books", books);
+        return "books/search";
+    }
+
 }

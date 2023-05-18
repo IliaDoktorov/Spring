@@ -19,9 +19,10 @@ public class PeopleService {
         this.peopleRepository = peopleRepository;
     }
 
-    public List<Person> findAll(){
+    public List<Person> findAll(boolean fetchBooks){
         List<Person> people = peopleRepository.findAll();
-        people.forEach(person -> Hibernate.initialize(person.getBooks()));
+        if(fetchBooks)
+            people.forEach(person -> Hibernate.initialize(person.getBooks()));
         return people;
     }
 
@@ -50,7 +51,9 @@ public class PeopleService {
     }
 
     @Transactional
-    public List<Person> findPerson(Person person){
-        return peopleRepository.findByInitialsContainingIgnoreCaseOrYearOfBirth(person.getInitials(), person.getYearOfBirth());
+    public List<Person> findPerson(Person personToSearch){
+        List<Person> people = peopleRepository.findByInitialsContainingIgnoreCaseOrYearOfBirth(personToSearch.getInitials(), personToSearch.getYearOfBirth());
+        people.forEach(person -> Hibernate.initialize(person.getBooks()));
+        return people;
     }
 }

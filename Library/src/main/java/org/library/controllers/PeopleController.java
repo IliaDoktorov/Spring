@@ -32,7 +32,7 @@ public class PeopleController {
     @GetMapping()
     public String index(Model model){
 //        model.addAttribute("people", personDAO.index());
-        model.addAttribute("people", peopleService.findAll());
+        model.addAttribute("people", peopleService.findAll(true));
         return "people/index";
     }
 
@@ -100,7 +100,7 @@ public class PeopleController {
         return "people/search";
     }
 
-    @PostMapping("/search")
+    @GetMapping("/search-person")
     public String lookForPerson(@ModelAttribute("person") Person person,
                                       BindingResult bindingResult,
                                       Model model){
