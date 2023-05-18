@@ -6,6 +6,11 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 @Entity
 @Table(name = "book")
 public class Book {
@@ -30,6 +35,13 @@ public class Book {
     @Min(value = 1900, message = "Release year cannot be less than 1900.")
 //    @Pattern(regexp = "\\d{4}", message = "Release year should have 4 digits.")
     private int releaseYear;
+
+    @Column(name = "reserved_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date reservedAt;
+
+    @Transient
+    private boolean isOverdue = false;
 
     @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "id")
@@ -81,5 +93,38 @@ public class Book {
 
     public void setOwner(Person owner) {
         this.owner = owner;
+    }
+
+    public Date getReservedAt() {
+        return reservedAt;
+    }
+
+    public void setReservedAt(Date reservedAt) {
+        this.reservedAt = reservedAt;
+    }
+
+    public boolean isOverdue() {
+        return isOverdue;
+    }
+
+    public void setOverdue(boolean overdue) {
+        isOverdue = overdue;
+    }
+
+    public void checkOverdue() {
+        if(reservedAt != null) {
+            long days = Duration.between(reservedAt.toInstant(), new Date().toInstant()).toDays();
+            isOverdue = days > 10;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", releaseYear=" + releaseYear +
+                ", reservedAt=" + reservedAt +
+                '}';
     }
 }

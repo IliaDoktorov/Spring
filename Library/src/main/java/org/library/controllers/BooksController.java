@@ -46,13 +46,13 @@ public class BooksController {
 //        Book book = bookDAO.getBookById(bookId);
 //        Person personByBook = personDAO.getPersonById(book.getOwner().getId());
         Book book = bookService.findById(bookId);
-        Person personByBook = book.getOwner();
+        Person owner = book.getOwner();
 
-        model.addAttribute("personByBook", personByBook);
+        model.addAttribute("owner", owner);
         model.addAttribute("book", book);
 
         // if book is vacant, get and populate person list to display in drop-don list
-        if(personByBook == null){
+        if(owner == null){
             model.addAttribute("people", peopleService.findAll(false));
         }
 
@@ -123,7 +123,7 @@ public class BooksController {
                               @ModelAttribute("person") Person person){
 
 //        bookDAO.reserveBook(bookId, person.getId());
-        bookService.reserveBook(bookId,person.getId());
+        bookService.reserveBook(bookId,person);
         return showBookPage(bookId, model, person);
     }
 

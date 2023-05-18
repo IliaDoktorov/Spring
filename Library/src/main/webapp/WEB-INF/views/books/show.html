@@ -7,7 +7,7 @@
 <body>
 <a th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getReleaseYear()}">book</a>
 
-<div th:if="${personByBook==null}">
+<div th:if="${owner==null}">
     <label>Books is empty. Would you like to assign to someone?</label>
     <br/>
     <form th:method="POST" th:action="@{/books/{id}/reserve(id=${book.getId()})}" th:object="${book}">
@@ -20,10 +20,16 @@
     </form>
 </div>
 
-<div th:unless="${personByBook==null}">
+<div th:unless="${owner==null}">
     <label>Books is now taken by:</label>
-    <a th:text="${personByBook.getInitials()}">text</a>
-
+<!--    <a th:text="${owner.getInitials()}">owner</a>-->
+    <a th:href="@{/people/{id}(id=${owner.getId()})}"
+       th:text="${owner.getInitials()}">person</a>
+    <br/>
+    <label>At:</label>
+    <a th:text="${book.getReservedAt()}">reservedAt</a>
+    <a th:style="${book.isOverdue()}? 'color:red' : ''" th:text="${book.isOverdue()}? 'OVERDUE!' : ''">text</a>
+    <hr/>
     <form th:method="POST" th:action="@{/books/{id}/vacate(id=${book.getId()})}" th:object="${book}">
         <input type="submit" value="Vacate"/>
     </form>

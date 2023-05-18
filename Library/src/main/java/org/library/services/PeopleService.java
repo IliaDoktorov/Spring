@@ -1,6 +1,7 @@
 package org.library.services;
 
 import org.hibernate.Hibernate;
+import org.library.models.Book;
 import org.library.models.Person;
 import org.library.repositories.PeopleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,9 @@ public class PeopleService {
 
     public Person findById(int id){
         Person person = peopleRepository.findById(id).orElse(null);
-        if(person != null)
-            Hibernate.initialize(person.getBooks());
+        if(person != null) {
+            person.getBooks().forEach(Book::checkOverdue);
+        }
         return person;
     }
 
