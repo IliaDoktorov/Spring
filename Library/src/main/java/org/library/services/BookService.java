@@ -4,6 +4,9 @@ import org.library.models.Book;
 import org.library.models.Person;
 import org.library.repositories.BooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +24,14 @@ public class BookService {
         this.booksRepository = booksRepository;
     }
 
-    public List<Book> findAll(){
-        return booksRepository.findAll();
+    public List<Book> findAll(int page, int itemsPerPage, boolean sortByYear){
+//        return booksRepository.findAll();
+        List<Book> books;
+        if(sortByYear)
+            books = booksRepository.findAll(PageRequest.of(page, itemsPerPage, Sort.by("releaseYear"))).getContent();
+        else
+            books = booksRepository.findAll(PageRequest.of(page, itemsPerPage)).getContent();
+        return books;
     }
 
     public Book findById(int id){
@@ -67,5 +76,9 @@ public class BookService {
         // use single query to search in author and title
         // as an option, search could be implemented by each field separately
         return booksRepository.findByTitleContainsIgnoreCaseOrAuthorContainsIgnoreCase(query, query);
+    }
+
+    public long count(){
+        return booksRepository.count();
     }
 }

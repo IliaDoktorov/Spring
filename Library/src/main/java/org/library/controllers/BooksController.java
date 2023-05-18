@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller()
@@ -34,9 +35,13 @@ public class BooksController {
     }
 
     @GetMapping()
-    public String index(Model model){
+    public String index(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                        @RequestParam(value = "items_per_page", required = false, defaultValue = "10") int itemsPerPage,
+                        @RequestParam(value = "sort_by_year", required = false, defaultValue = "false") boolean sortByYear,
+                        Model model){
 //        model.addAttribute("books", bookDAO.index());
-        model.addAttribute("books", bookService.findAll());
+
+        model.addAttribute("books", bookService.findAll(page, itemsPerPage, sortByYear));
         return "books/index";
     }
 
