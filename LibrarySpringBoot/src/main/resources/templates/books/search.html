@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org/" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+</head>
+<body>
+<form th:method="GET" th:action="@{/books/search-book}">
+    <label for="query" >Enter query:</label>
+    <input type="text" id="query" th:name="query"/>
+    <br/>
+    <input type="submit" value="Search"/>
+</form>
+<hr/>
+<div th:if="${books.isEmpty()}">
+    <label style="color:red">Not able to find books by your query</label>
+</div>
+<div th:each="book : ${books}" th:with="owner=${book.owner}">
+    <a th:href="@{/books/{id}(id=${book.getId()})}"
+       th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getReleaseYear()}">book</a>
+<!--    <a th:object="${owner}" th:text="*{initials}">owner</a>-->
+    <div th:if="${owner}==null">
+        <label>Book is vacant</label>
+    </div>
+    <div th:unless="${owner==null}">
+        <a th:text="'Book is taken by ' + ${owner.getInitials()}">text</a>
+    </div>
+    </br>
+</div>
+<hr/>
+<a th:href="@{/books}"> <--Back to books list</a>
+</body>
+</html>

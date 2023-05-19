@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>All people</title>
+</head>
+<body>
+<div th:each="person : ${people}">
+    <a th:href="@{/people/{id}(id=${person.getId()})}"
+       th:text="${person.getInitials() + ', ' + person.getYearOfBirth()}">person</a>
+    has
+    <a th:object="${person}" th:text="*{books.size() > 0}? (*{books.size() > 1}? *{books.size()} + ' books' : *{books.size()} + ' book') : 'no books'">books</a>
+</div>
+
+<br/>
+<hr/>
+
+<a th:href="@{/people/new}">ADD NEW PERSON--></a>
+<br/>
+<a th:href="@{/index}"><--Back to main</a>
+<br/>
+<hr/>
+<a th:href="@{/people/search}">Search</a>
+</body>
+</html>
