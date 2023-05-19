@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "person")
+@NamedEntityGraph(name = "person-books-graph",
+        attributeNodes = @NamedAttributeNode(value = "books"))
 public class Person {
     public static final int YEAROFBIRTH_LOWERBOUND = 1900;
 
@@ -36,7 +39,8 @@ public class Person {
         this.yearOfBirth = yearOfBirth;
     }
 
-    public Person() {}
+    public Person() {
+    }
 
     public int getId() {
         return id;
@@ -76,5 +80,18 @@ public class Person {
                 "initials='" + initials + '\'' +
                 ", yearOfBirth=" + yearOfBirth +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return id == person.id && yearOfBirth == person.yearOfBirth && Objects.equals(initials, person.initials);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, initials, yearOfBirth);
     }
 }

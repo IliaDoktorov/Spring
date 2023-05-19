@@ -1,5 +1,6 @@
 package org.library.dao;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -8,26 +9,30 @@ import org.library.models.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class PersonDAO {
 //    private final JdbcTemplate jdbcTemplate;
     private final SessionFactory sessionFactory;
 
+    private final EntityManager entityManager;
+
     @Autowired
-    public PersonDAO(SessionFactory sessionFactory) {
+    public PersonDAO(SessionFactory sessionFactory, EntityManager entityManager) {
         this.sessionFactory = sessionFactory;
 //        this.jdbcTemplate = jdbcTemplate;
+        this.entityManager = entityManager;
     }
 
     @Transactional
     public List<Person> index(){
-        Session session = sessionFactory.getCurrentSession();
+        Session session = entityManager.unwrap(Session.class);
 
-        return session.createQuery("from Person", Person.class).getResultList();
-//        return jdbcTemplate.query("SELECT * FROM PERSON", new PersonMapper());
+        Set<Person> people = new HashSet<>(session.createQuery("select p from Person p left join fetch p.books", Person.class).getResultList());
+
+        return new ArrayList<>(people);
     }
 
     @Transactional

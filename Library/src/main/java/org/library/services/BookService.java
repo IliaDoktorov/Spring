@@ -4,7 +4,6 @@ import org.library.models.Book;
 import org.library.models.Person;
 import org.library.repositories.BooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,6 @@ public class BookService {
     }
 
     public List<Book> findAll(int page, int itemsPerPage, boolean sortByYear){
-//        return booksRepository.findAll();
         List<Book> books;
         if(sortByYear)
             books = booksRepository.findAll(PageRequest.of(page, itemsPerPage, Sort.by("releaseYear"))).getContent();
@@ -36,7 +34,6 @@ public class BookService {
 
     public Book findById(int id){
         Book book = null;
-//        Book book = booksRepository.findById(id).orElse(null);
         Optional<Book> foundBook = booksRepository.findById(id);
         if(foundBook.isPresent()) {
             book = foundBook.get();

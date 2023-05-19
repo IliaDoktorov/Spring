@@ -2,7 +2,9 @@ package org.library.repositories;
 
 import org.library.models.Book;
 import org.library.models.Person;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,15 +17,15 @@ import java.util.List;
 
 @Repository
 public interface BooksRepository extends JpaRepository<Book, Integer> {
+
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH,
+            attributePaths = "owner")
+    Page<Book> findAll(Pageable pageable);
+
     List<Book> findByTitleContainsIgnoreCaseOrAuthorContainsIgnoreCase(String title, String author);
 
     @Transactional
     @Modifying
     @Query("update Book b set b.owner = ?1, b.reservedAt = ?2 where b.id = ?3")
     void updateOwnerAndReservedAtById(@Nullable Person owner, @Nullable Date reservedAt, int id);
-
-
-
-
-
 }

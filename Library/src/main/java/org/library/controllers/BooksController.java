@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller()
@@ -26,9 +25,7 @@ public class BooksController {
     private final PeopleService peopleService;
 
     @Autowired
-    public BooksController(BookDAO bookDAO, PersonDAO personDAO, BookValidator bookValidator, BookService bookService, PeopleService peopleService) {
-//        this.bookDAO = bookDAO;
-//        this.personDAO = personDAO;
+    public BooksController(BookValidator bookValidator, BookService bookService, PeopleService peopleService) {
         this.bookValidator = bookValidator;
         this.bookService = bookService;
         this.peopleService = peopleService;
@@ -39,8 +36,6 @@ public class BooksController {
                         @RequestParam(value = "items_per_page", required = false, defaultValue = "10") int itemsPerPage,
                         @RequestParam(value = "sort_by_year", required = false, defaultValue = "false") boolean sortByYear,
                         Model model){
-//        model.addAttribute("books", bookDAO.index());
-
         model.addAttribute("books", bookService.findAll(page, itemsPerPage, sortByYear));
         return "books/index";
     }
@@ -48,8 +43,6 @@ public class BooksController {
     @GetMapping("/{id}")
     public String showBookPage(@PathVariable("id") int bookId, Model model,
                                @ModelAttribute("person") Person person){
-//        Book book = bookDAO.getBookById(bookId);
-//        Person personByBook = personDAO.getPersonById(book.getOwner().getId());
         Book book = bookService.findById(bookId);
         Person owner = book.getOwner();
 
@@ -58,7 +51,7 @@ public class BooksController {
 
         // if book is vacant, get and populate person list to display in drop-don list
         if(owner == null){
-            model.addAttribute("people", peopleService.findAll(false));
+            model.addAttribute("people", peopleService.findAll());
         }
 
         return "books/show";
@@ -78,7 +71,6 @@ public class BooksController {
             return "books/new";
         }
 
-//        bookDAO.createNewBook(book);
         bookService.save(book);
         return "redirect:/books";
     }
@@ -86,7 +78,6 @@ public class BooksController {
     @PostMapping("/{id}/edit")
     public String showEditPage(@PathVariable("id") int id,
                                Model model){
-//        model.addAttribute("book", bookDAO.getBookById(id));
         model.addAttribute("book", bookService.findById(id));
         return "books/edit";
     }
@@ -101,7 +92,6 @@ public class BooksController {
             return "books/edit";
         }
 
-//        bookDAO.updateBook(book, id);
         bookService.update(id, book);
 
         return "redirect:/books";
@@ -109,7 +99,6 @@ public class BooksController {
 
     @PostMapping("/{id}/delete")
     public String deleteBook(@PathVariable("id") int id){
-//        bookDAO.deleteBookById(id);
         bookService.deleteById(id);
         return "redirect:/books";
     }
@@ -118,7 +107,6 @@ public class BooksController {
     public String vacate(@PathVariable("id") int bookId,
                          Model model,
                          @ModelAttribute("person") Person person){
-//        bookDAO.vacate(bookId);
         bookService.vacate(bookId);
         return showBookPage(bookId, model, person);
     }
@@ -126,8 +114,6 @@ public class BooksController {
     @PostMapping("/{id}/reserve")
     public String reserveBook(@PathVariable("id") int bookId, Model model,
                               @ModelAttribute("person") Person person){
-
-//        bookDAO.reserveBook(bookId, person.getId());
         bookService.reserveBook(bookId,person);
         return showBookPage(bookId, model, person);
     }

@@ -20,10 +20,10 @@
        th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getReleaseYear()}">book</a>
 <!--    <a th:object="${owner}" th:text="*{initials}">owner</a>-->
     <div th:if="${owner}==null">
-        <label style="color:green">Book is vacant</label>
+        <label>Book is vacant</label>
     </div>
     <div th:unless="${owner==null}">
-        <a style="color:red" th:text="'Book is taken by ' + ${owner.getInitials()}">text</a>
+        <a th:text="'Book is taken by ' + ${owner.getInitials()}">text</a>
     </div>
     </br>
 </div>

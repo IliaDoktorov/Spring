@@ -1,6 +1,7 @@
 package org.library.services;
 
 import org.hibernate.Hibernate;
+import org.library.dao.PersonDAO;
 import org.library.models.Book;
 import org.library.models.Person;
 import org.library.repositories.PeopleRepository;
@@ -20,11 +21,8 @@ public class PeopleService {
         this.peopleRepository = peopleRepository;
     }
 
-    public List<Person> findAll(boolean fetchBooks){
-        List<Person> people = peopleRepository.findAll();
-        if(fetchBooks)
-            people.forEach(person -> Hibernate.initialize(person.getBooks()));
-        return people;
+    public List<Person> findAll(){
+        return peopleRepository.findAll();
     }
 
     public Person findById(int id){
@@ -49,13 +47,10 @@ public class PeopleService {
     @Transactional(readOnly = false)
     public void deleteById(int id){
         peopleRepository.deleteById(id);
-//        peopleRepository.delete(person);
     }
 
     @Transactional
     public List<Person> findPerson(Person personToSearch){
-        List<Person> people = peopleRepository.findByInitialsContainingIgnoreCaseOrYearOfBirth(personToSearch.getInitials(), personToSearch.getYearOfBirth());
-        people.forEach(person -> Hibernate.initialize(person.getBooks()));
-        return people;
+        return peopleRepository.findByInitialsContainingIgnoreCaseOrYearOfBirth(personToSearch.getInitials(), personToSearch.getYearOfBirth());
     }
 }
