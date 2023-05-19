@@ -74,9 +74,12 @@ public class BookDAO {
     public void reserveBook(int bookId, int personId) {
 //        jdbcTemplate.update("UPDATE BOOK SET person_id=? WHERE id=?", personId, bookId);
         Session session = sessionFactory.getCurrentSession();
-        Person person = session.get(Person.class, personId);
+
+//        Person personProxy = session.load(Person.class, personId);
+        Person personProxy = session.getReference(Person.class, personId);
+
         Book book = session.get(Book.class, bookId);
 
-        book.setOwner(person);
+        book.setOwner(personProxy);
     }
 }
