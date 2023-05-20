@@ -29,6 +29,6 @@ public class PersonSearchValidator implements Validator {
             errors.rejectValue("initials","", "Initials cannot be empty!");
 
         if(person.getYearOfBirth() < Person.YEAROFBIRTH_LOWERBOUND)
-            errors.rejectValue("yearOfBirth", "", "Year of birth cannot be less than 1900");
+            errors.rejectValue("yearOfBirth", "", "Year of birth cannot be less than " + Person.YEAROFBIRTH_LOWERBOUND);
     }
 }

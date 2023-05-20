@@ -12,11 +12,11 @@ import java.util.Optional;
 public interface PeopleRepository extends JpaRepository<Person, Integer> {
 
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH,
-            value = "person-books-graph")
+            attributePaths = {"books", "passport"})
     List<Person> findAll();
 
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH,
-            value = "person-books-graph")
+            attributePaths = {"books", "passport"})
     List<Person> findByInitialsContainingIgnoreCaseOrYearOfBirth(String initials, int yearOfBirth);
 
     Optional<Person> findByInitials(String initials);

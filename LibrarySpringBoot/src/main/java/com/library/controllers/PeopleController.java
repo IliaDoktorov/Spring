@@ -37,6 +37,7 @@ public class PeopleController {
         Person person = peopleService.findById(id);
         model.addAttribute("person", person);
         model.addAttribute("books", person.getBooks());
+        model.addAttribute("passport", person.getPassport());
 
         return "people/show";
     }
@@ -61,7 +62,8 @@ public class PeopleController {
 
     @PostMapping("/{id}/edit")
     public String editPersonPage(@PathVariable("id") int id, Model model){
-        model.addAttribute("person", peopleService.findById(id));
+        Person personToEdit = peopleService.findById(id);
+        model.addAttribute("person", personToEdit);
         return "people/edit";
     }
 

@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "book")
@@ -124,5 +125,18 @@ public class Book {
                 ", releaseYear=" + releaseYear +
                 ", reservedAt=" + reservedAt +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return id == book.id && releaseYear == book.releaseYear && Objects.equals(title, book.title) && Objects.equals(author, book.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, author, releaseYear);
     }
 }
