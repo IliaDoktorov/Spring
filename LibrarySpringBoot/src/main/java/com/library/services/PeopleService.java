@@ -4,9 +4,13 @@ import com.library.models.Book;
 import com.library.models.Passport;
 import com.library.models.Person;
 import com.library.repositories.PeopleRepository;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.NumberUtils;
 
 import java.util.List;
 
@@ -68,7 +72,19 @@ public class PeopleService {
     }
 
     @Transactional
-    public List<Person> findPerson(Person personToSearch){
-        return peopleRepository.findByInitialsContainingIgnoreCaseOrYearOfBirth(personToSearch.getInitials(), personToSearch.getYearOfBirth());
+    public List<Person> findByQuery(String query){
+        Person person;
+        if(query.chars().allMatch(Character::isDigit))
+            person = new Person(query, Integer.parseInt(query));
+        else
+            person = new Person(query, 0);
+
+        ExampleMatcher matcher = ExampleMatcher.matchingAny()
+                .withMatcher("initials", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+                .withMatcher("yearOfBirth", ExampleMatcher.GenericPropertyMatchers.exact());
+
+        Example<Person> personExample = Example.of(person, matcher);
+
+        return peopleRepository.findAll(personExample);
     }
 }

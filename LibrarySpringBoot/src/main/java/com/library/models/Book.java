@@ -13,6 +13,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "book")
 public class Book {
+    public static final int RELEASEYEAR_LOWERBOUND = 1901;
 
     @Id
     @Column(name = "id")
@@ -31,7 +32,7 @@ public class Book {
     private String author;
 
     @Column(name = "release_year")
-    @Min(value = 1900, message = "Release year cannot be less than 1900.")
+    @Min(value = RELEASEYEAR_LOWERBOUND, message = "Release year cannot be less than " + RELEASEYEAR_LOWERBOUND)
 //    @Pattern(regexp = "\\d{4}", message = "Release year should have 4 digits.")
     private int releaseYear;
 

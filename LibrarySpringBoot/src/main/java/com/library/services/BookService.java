@@ -4,6 +4,8 @@ import com.library.models.Book;
 import com.library.models.Person;
 import com.library.repositories.BooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,39 +25,39 @@ public class BookService {
         this.booksRepository = booksRepository;
     }
 
-    public List<Book> findAll(int page, int itemsPerPage, boolean sortByYear){
+    public List<Book> findAll(int page, int itemsPerPage, boolean sortByYear) {
         List<Book> books;
-        if(sortByYear)
+        if (sortByYear)
             books = booksRepository.findAll(PageRequest.of(page, itemsPerPage, Sort.by("releaseYear"))).getContent();
         else
             books = booksRepository.findAll(PageRequest.of(page, itemsPerPage)).getContent();
         return books;
     }
 
-    public Book findById(int id){
+    public Book findById(int id) {
         Book book = null;
         Optional<Book> foundBook = booksRepository.findById(id);
-        if(foundBook.isPresent()) {
+        if (foundBook.isPresent()) {
             book = foundBook.get();
-            if(book.getOwner() != null)
+            if (book.getOwner() != null)
                 book.checkOverdue();
         }
         return book;
     }
 
     @Transactional(readOnly = false)
-    public void save(Book book){
+    public void save(Book book) {
         booksRepository.save(book);
     }
 
     @Transactional(readOnly = false)
-    public void update(int id, Book book){
+    public void update(int id, Book book) {
         book.setId(id);
         booksRepository.save(book);
     }
 
     @Transactional(readOnly = false)
-    public void deleteById(int id){
+    public void deleteById(int id) {
         booksRepository.deleteById(id);
     }
 
@@ -66,16 +68,23 @@ public class BookService {
 
     @Transactional(readOnly = false)
     public void reserveBook(int bookId, Person person) {
-        booksRepository.updateOwnerAndReservedAtById(person, new Date() ,bookId);
+        booksRepository.updateOwnerAndReservedAtById(person, new Date(), bookId);
     }
 
     public List<Book> findByQuery(String query) {
-        // use single query to search in author and title
-        // as an option, search could be implemented by each field separately
-        return booksRepository.findByTitleContainsIgnoreCaseOrAuthorContainsIgnoreCase(query, query);
-    }
+        Book book;
+        if (query.chars().allMatch(Character::isDigit))
+            book = new Book(query, query, Integer.parseInt(query));
+        else
+            book = new Book(query, query, 0);
 
-    public long count(){
-        return booksRepository.count();
+        ExampleMatcher matcher = ExampleMatcher.matchingAny()
+                .withMatcher("author", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+                .withMatcher("title", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
+                .withMatcher("releaseYear", ExampleMatcher.GenericPropertyMatchers.exact());
+
+        Example<Book> bookExample = Example.of(book, matcher);
+
+        return booksRepository.findAll(bookExample);
     }
 }
