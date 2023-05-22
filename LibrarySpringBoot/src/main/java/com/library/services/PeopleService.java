@@ -31,7 +31,6 @@ public class PeopleService {
         if(person != null) {
             person.getBooks().forEach(Book::checkOverdue);
         }
-        System.out.println("Show: " + person.getPassport().getNumber() + " " + person.getPassport().getOwner());
         return person;
     }
 
@@ -72,14 +71,17 @@ public class PeopleService {
     @Transactional
     public List<Person> findByQuery(String query){
         Person person;
-        if(query.chars().allMatch(Character::isDigit))
+        if(query.chars().allMatch(Character::isDigit)) {
             person = new Person(query, Integer.parseInt(query));
+            person.setPassport(new Passport(query));
+        }
         else
             person = new Person(query, 0);
 
         ExampleMatcher matcher = ExampleMatcher.matchingAny()
                 .withMatcher("initials", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
-                .withMatcher("yearOfBirth", ExampleMatcher.GenericPropertyMatchers.exact());
+                .withMatcher("yearOfBirth", ExampleMatcher.GenericPropertyMatchers.exact())
+                .withMatcher("passport.number", ExampleMatcher.GenericPropertyMatchers.contains());
 
         Example<Person> personExample = Example.of(person, matcher);
 

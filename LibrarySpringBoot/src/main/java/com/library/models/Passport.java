@@ -13,7 +13,7 @@ public class Passport {
     private int id;
 
     @Column(name = "number")
-    private int number;
+    private String number;
 
     @OneToOne
     @JoinColumn(name = "person_id", referencedColumnName = "id")
@@ -22,15 +22,15 @@ public class Passport {
     public Passport() {
     }
 
-    public Passport(int number) {
+    public Passport(String number) {
         this.number = number;
     }
 
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 

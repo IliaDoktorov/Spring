@@ -26,12 +26,17 @@ public class PersonValidator implements Validator {
 
         // since we have only yearOfBirth field from person and number filed from passport that require validation
         // decided to combine both validation here and not create separate validator for passport
-        if(passportRepository.existsByNumber(person.getPassport().getNumber())){
+        if(passportRepository.existsByNumber(person.getPassport().getNumber()))
             errors.rejectValue("passport.number", "", "Passport with such number already exist");
-        }
 
-        if(person.getYearOfBirth() < Person.YEAROFBIRTH_LOWERBOUND){
+        if(person.getPassport().getNumber() == null || person.getPassport().getNumber().isEmpty() || person.getPassport().getNumber().isBlank())
+            errors.rejectValue("passport.number", "", "Passport number cannot be blank or empty");
+
+        if(!person.getPassport().getNumber().matches("\\d{4}\s\\d{6}"))
+            errors.rejectValue("passport.number", "", "Passport should be in format XXXX YYYYYY and contain only digits");
+
+
+        if(person.getYearOfBirth() < Person.YEAROFBIRTH_LOWERBOUND)
             errors.rejectValue("yearOfBirth", "", "Year of birth cannot be less than " + Person.YEAROFBIRTH_LOWERBOUND);
-        }
     }
 }
