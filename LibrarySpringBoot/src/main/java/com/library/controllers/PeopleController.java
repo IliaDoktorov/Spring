@@ -2,7 +2,6 @@ package com.library.controllers;
 
 import com.library.models.Person;
 import com.library.services.PeopleService;
-import com.library.util.PersonSearchValidator;
 import com.library.util.PersonValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class PeopleController {
     private final PeopleService peopleService;
     private final PersonValidator personValidator;
-    private final PersonSearchValidator personSearchValidator;
 
     @Autowired
-    public PeopleController(PeopleService peopleService, PersonValidator personValidator, PersonSearchValidator personSearchValidator) {
+    public PeopleController(PeopleService peopleService, PersonValidator personValidator) {
         this.peopleService = peopleService;
         this.personValidator = personValidator;
-        this.personSearchValidator = personSearchValidator;
     }
 
     @GetMapping()
@@ -37,6 +34,7 @@ public class PeopleController {
         Person person = peopleService.findById(id);
         model.addAttribute("person", person);
         model.addAttribute("books", person.getBooks());
+        model.addAttribute("passport", person.getPassport());
 
         return "people/show";
     }
@@ -61,7 +59,8 @@ public class PeopleController {
 
     @PostMapping("/{id}/edit")
     public String editPersonPage(@PathVariable("id") int id, Model model){
-        model.addAttribute("person", peopleService.findById(id));
+        Person personToEdit = peopleService.findById(id);
+        model.addAttribute("person", personToEdit);
         return "people/edit";
     }
 
@@ -86,21 +85,17 @@ public class PeopleController {
     }
 
     @GetMapping("/search")
-    public String searchPage(@ModelAttribute("person") Person person){
+    public String searchPage(){
         return "people/search";
     }
 
     @GetMapping("/search-person")
-    public String lookForPerson(@ModelAttribute("person") Person person,
-                                      BindingResult bindingResult,
+    public String lookForPerson(@RequestParam("query")String query,
                                       Model model){
+        if(query == null || query.isEmpty())
+            return "books/search";
 
-        personSearchValidator.validate(person, bindingResult);
-
-        if(bindingResult.hasErrors())
-            return "people/search";
-
-        model.addAttribute("people", peopleService.findPerson(person));
+        model.addAttribute("people", peopleService.findByQuery(query));
         return "people/search";
     }
 }

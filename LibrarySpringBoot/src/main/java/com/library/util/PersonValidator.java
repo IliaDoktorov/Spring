@@ -1,6 +1,7 @@
 package com.library.util;
 
 import com.library.models.Person;
+import com.library.repositories.PassportRepository;
 import com.library.repositories.PeopleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,10 +10,10 @@ import org.springframework.validation.Validator;
 
 @Component
 public class PersonValidator implements Validator {
-    private final PeopleRepository peopleRepository;
+    private final PassportRepository passportRepository;
     @Autowired
-    public PersonValidator(PeopleRepository peopleRepository) {
-        this.peopleRepository = peopleRepository;
+    public PersonValidator(PassportRepository passportRepository) {
+        this.passportRepository = passportRepository;
     }
 
     @Override
@@ -24,12 +25,14 @@ public class PersonValidator implements Validator {
     public void validate(Object target, Errors errors) {
         Person person = (Person) target;
 
-        if(peopleRepository.findByInitials(person.getInitials()).isPresent()){
-            errors.rejectValue("initials", "", "Person with these Initials already exist!");
+        // since we have only yearOfBirth field from person and number filed from passport that require validation
+        // decided to combine both validation here and not create separate validator for passport
+        if(passportRepository.existsByNumber(person.getPassport().getNumber())){
+            errors.rejectValue("passport.number", "", "Passport with such number already exist");
         }
 
         if(person.getYearOfBirth() < Person.YEAROFBIRTH_LOWERBOUND){
-            errors.rejectValue("yearOfBirth", "", "Year of birth cannot be less than 1900!");
+            errors.rejectValue("yearOfBirth", "", "Year of birth cannot be less than " + Person.YEAROFBIRTH_LOWERBOUND);
         }
     }
 }

@@ -14,6 +14,10 @@
   <input type="text" th:field="*{yearOfBirth}" id="yearOfBirth"/>
   <div style="color:red" th:if="${#fields.hasErrors('yearOfBirth')}" th:errors="*{yearOfBirth}">error</div>
   <br/>
+  <label for="passport.number" >Enter passport number:</label>
+  <input type="text" th:field="*{passport.number}" id="passport.number"/>
+  <div style="color:red" th:if="${#fields.hasErrors('passport.number')}" th:errors="*{passport.number}">error</div>
+  <br/>
   <input type="submit" value="Modify!"/>
 </form>
 

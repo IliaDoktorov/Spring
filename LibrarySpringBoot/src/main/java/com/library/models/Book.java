@@ -8,10 +8,12 @@ import jakarta.validation.constraints.Size;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "book")
 public class Book {
+    public static final int RELEASEYEAR_LOWERBOUND = 1901;
 
     @Id
     @Column(name = "id")
@@ -30,7 +32,7 @@ public class Book {
     private String author;
 
     @Column(name = "release_year")
-    @Min(value = 1900, message = "Release year cannot be less than 1900.")
+    @Min(value = RELEASEYEAR_LOWERBOUND, message = "Release year cannot be less than " + RELEASEYEAR_LOWERBOUND)
 //    @Pattern(regexp = "\\d{4}", message = "Release year should have 4 digits.")
     private int releaseYear;
 
@@ -124,5 +126,18 @@ public class Book {
                 ", releaseYear=" + releaseYear +
                 ", reservedAt=" + reservedAt +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return id == book.id && releaseYear == book.releaseYear && Objects.equals(title, book.title) && Objects.equals(author, book.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, author, releaseYear);
     }
 }

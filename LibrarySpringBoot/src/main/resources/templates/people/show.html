@@ -5,7 +5,7 @@
     <title>Person</title>
 </head>
 <body>
-<a th:text="${person.getInitials() + ', ' + person.getYearOfBirth()}">person</a>
+<a th:text="${person.getInitials() + ', ' + person.getYearOfBirth() + ', passport: ' + passport.number}">person</a>
 
 <div th:if="${books.isEmpty()}">
     <hr/>
@@ -21,7 +21,7 @@
            th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getReleaseYear()}"
            th:href="@{/books/{id}(id=${book.getId()})}">book</a>
         <a th:style="${book.isOverdue()}? 'color:red' : ''"
-           th:text="${book.isOverdue()}? 'OVERDUE' : ''">text</a>
+           th:text="${book.isOverdue()}? 'OVERDUE' : ''">overdue</a>
     </div>
 </div>
 

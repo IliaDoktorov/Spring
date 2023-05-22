@@ -2,6 +2,7 @@ package com.library.repositories;
 
 import com.library.models.Book;
 import com.library.models.Person;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -22,7 +23,9 @@ public interface BooksRepository extends JpaRepository<Book, Integer> {
             attributePaths = "owner")
     Page<Book> findAll(Pageable pageable);
 
-    List<Book> findByTitleContainsIgnoreCaseOrAuthorContainsIgnoreCase(String title, String author);
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH,
+            attributePaths = "owner")
+    List<Book> findAll(Example bookExample);
 
     @Transactional
     @Modifying
