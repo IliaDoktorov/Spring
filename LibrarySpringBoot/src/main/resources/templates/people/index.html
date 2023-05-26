@@ -5,6 +5,7 @@
     <title>All people</title>
 </head>
 <body>
+<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 <div th:each="person : ${people}">
     <a th:href="@{/people/{id}(id=${person.getId()})}"
        th:text="${person.getInitials() + ', ' + person.getYearOfBirth()}">person</a>

@@ -5,6 +5,7 @@
     <title>Search</title>
 </head>
 <body>
+<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 <form th:method="GET" th:action="@{/people/search-person}">
     <label for="query" >Enter query:</label>
     <input type="text" id="query" th:name="query"/>
