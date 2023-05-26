@@ -14,6 +14,10 @@
     <br/>
     <input type="submit" value="Login"/>
     <div th:if="${param.error}" style="color:red">Credentials are invalid</div>
+    <div th:if="${param.successful_registration}" style="color:green">Registration successful, you can use new employee to login</div>
+
+    <hr/>
+    <a th:href="@{/registration}">Register new employee -></a>
 </form>
 </body>
 </html>

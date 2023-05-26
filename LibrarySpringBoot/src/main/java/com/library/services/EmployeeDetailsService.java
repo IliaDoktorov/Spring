@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class EmployeeDetailsService implements UserDetailsService {
-    private EmpoyeesRepository empoyeesRepository;
+    private final EmpoyeesRepository empoyeesRepository;
 
     @Autowired
     public EmployeeDetailsService(EmpoyeesRepository empoyeesRepository) {

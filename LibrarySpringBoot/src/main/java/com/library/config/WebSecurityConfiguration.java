@@ -23,16 +23,17 @@ public class WebSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/login", "/error").permitAll()
-                        .anyRequest().authenticated()
-        ).formLogin(form -> form
-                .loginPage("/login").permitAll()
-                .loginProcessingUrl("/process_login")
-                .defaultSuccessUrl("/index", true)
-                .failureUrl("/login?error")
-        );
+                        .requestMatchers("/login", "/error", "/registration").permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/login").permitAll()
+                        .loginProcessingUrl("/process_login")
+                        .defaultSuccessUrl("/index", true)
+                        .failureUrl("/login?error")
+                );
 //        ).logout(LogoutConfigurer::permitAll);
 
         return http.build();
@@ -43,7 +44,7 @@ public class WebSecurityConfiguration {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 }
