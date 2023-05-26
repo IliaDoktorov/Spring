@@ -1,7 +1,6 @@
 package com.library.controllers;
 
 import com.library.models.Employee;
-import com.library.services.EmployeeDetailsService;
 import com.library.services.RegistrationService;
 import com.library.util.EmployeeValidator;
 import jakarta.validation.Valid;
@@ -11,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class AuthenticationController {
@@ -40,7 +38,7 @@ public class AuthenticationController {
         if(bindingResult.hasErrors())
             return "authentication/registration";
 
-        registrationService.createNewEmployee(employee);
+        registrationService.register(employee);
 
         return "redirect:/login?successful_registration";
     }
