@@ -14,6 +14,11 @@
     <input type="password" th:field="*{password}" id="password"/>
     <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">error</div>
     <br/>
+    <label for="role">Select role:</label>
+    <select th:object="${employee}" th:field="*{role}" id="role">
+        <option th:each="roleFromList : ${roles}" th:value="${roleFromList}" th:text="${roleFromList}"></option>
+    </select>
+    <br/>
     <input type="submit" value="Create new employee"/>
 </form>
 <hr/>

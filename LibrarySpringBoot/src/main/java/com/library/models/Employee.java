@@ -1,5 +1,6 @@
 package com.library.models;
 
+import com.library.security.EmployeeRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -21,12 +22,17 @@ public class Employee {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private EmployeeRole role;
+
     public Employee() {
     }
 
-    public Employee(String username, String password) {
+    public Employee(String username, String password, EmployeeRole role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     public int getId() {
@@ -51,5 +57,23 @@ public class Employee {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public EmployeeRole getRole() {
+        return role;
+    }
+
+    public void setRole(EmployeeRole role) {
+        this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                '}';
     }
 }
