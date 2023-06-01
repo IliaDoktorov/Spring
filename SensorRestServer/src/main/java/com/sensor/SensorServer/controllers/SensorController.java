@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,12 +54,12 @@ public class SensorController {
     }
 
     @ExceptionHandler
-    private ResponseEntity<SensorErrorResponse> handleException(SensorException ex) {
-        SensorErrorResponse sensorErrorResponse = new SensorErrorResponse(
+    private ResponseEntity<ErrorResponse> handleException(SensorException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
                 ex.getMessage(),
                 System.currentTimeMillis()
         );
 
-        return new ResponseEntity<>(sensorErrorResponse, ex.getHttpStatus());
+        return new ResponseEntity<>(errorResponse, ex.getHttpStatus());
     }
 }

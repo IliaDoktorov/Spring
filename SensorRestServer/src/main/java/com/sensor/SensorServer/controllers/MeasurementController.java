@@ -3,7 +3,7 @@ package com.sensor.SensorServer.controllers;
 import com.sensor.SensorServer.dto.MeasurementDTO;
 import com.sensor.SensorServer.models.Measurement;
 import com.sensor.SensorServer.services.MeasurementService;
-import com.sensor.SensorServer.utils.MeasurementErrorResponse;
+import com.sensor.SensorServer.utils.ErrorResponse;
 import com.sensor.SensorServer.utils.MeasurementException;
 import com.sensor.SensorServer.utils.MeasurementValidator;
 import jakarta.validation.Valid;
@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,8 +60,8 @@ public class MeasurementController {
     }
 
     @ExceptionHandler
-    private ResponseEntity<MeasurementErrorResponse> exceptionHandler(MeasurementException ex) {
-        MeasurementErrorResponse errorResponse = new MeasurementErrorResponse(
+    private ResponseEntity<ErrorResponse> exceptionHandler(MeasurementException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
                 ex.getMessage(),
                 System.currentTimeMillis()
         );
