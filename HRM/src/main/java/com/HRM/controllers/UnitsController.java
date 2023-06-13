@@ -1,14 +1,38 @@
 package com.HRM.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.HRM.dto.UnitDTO;
+import com.HRM.models.Unit;
+import com.HRM.services.UnitsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/units")
 public class UnitsController {
+    @Autowired
+    private UnitsService unitsService;
+
     // get unit
 
-    // add unit
+    @PostMapping("/add")
+    public ResponseEntity<HttpStatus> add(@RequestBody Unit unit){
+        unitsService.add(unit);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/{name}")
+    public UnitDTO get(@PathVariable("name") String name){
+        return unitsService.get(name);
+    }
 
     // update unit
+
+    @ExceptionHandler
+    private ResponseEntity<HttpStatus> handleException(Exception ex){
+        System.out.println("NOT FOUND");
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }
