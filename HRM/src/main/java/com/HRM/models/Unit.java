@@ -2,7 +2,9 @@ package com.HRM.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "unit")
@@ -15,11 +17,14 @@ public class Unit {
 
     @Column(name = "parent_unit")
     private String parentUnit;
-    @ManyToMany
+
+    // Set insteadof List because List will cause removing all records from join table before insert new
+    // It happens because List could contain duplicated values
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "unit_person",
-    joinColumns = @JoinColumn(name = "unit_id"),
-    inverseJoinColumns = @JoinColumn(name = "person_id"))
-    private List<Person> people;
+    joinColumns = @JoinColumn(name = "unit_name", referencedColumnName = "name", updatable = false, insertable = false),
+    inverseJoinColumns = @JoinColumn(name = "person_id", referencedColumnName = "id", updatable = false, insertable = false))
+    private Set<Person> people;
 
     public Unit() {
     }
@@ -53,11 +58,11 @@ public class Unit {
         this.parentUnit = parentUnit;
     }
 
-    public List<Person> getPeople() {
+    public Set<Person> getPeople() {
         return people;
     }
 
-    public void setPeople(List<Person> people) {
+    public void setPeople(Set<Person> people) {
         this.people = people;
     }
 

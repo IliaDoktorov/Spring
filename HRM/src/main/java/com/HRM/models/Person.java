@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "person")
@@ -24,10 +26,78 @@ public class Person {
     private String email;
     @Column(name = "is_active")
     private boolean isActive; // represents working\fired functionality
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "position", referencedColumnName = "id")
     private Position position;
-    @ManyToMany(mappedBy = "people")
-    private List<Unit> units;
 
+    // Set insteadof List because List will cause removing all records from join table before insert new
+    // It happens because List could contain duplicated values
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people", cascade = CascadeType.PERSIST)
+    private Set<Unit> units;
+
+    public Person() {
+    }
+
+    public Person(String firstName, String lastName, String email, boolean isActive) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.isActive = isActive;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public Set<Unit> getUnits() {
+        return units;
+    }
+
+    public void setUnits(Set<Unit> units) {
+        this.units = units;
+    }
 }

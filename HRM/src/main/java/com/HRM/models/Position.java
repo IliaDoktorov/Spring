@@ -16,4 +16,35 @@ public class Position {
 
     @OneToMany(mappedBy = "position")
     private List<Person> people;
+
+    public Position() {
+    }
+
+    public Position(String name) {
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Person> getPeople() {
+        return people;
+    }
+
+    public void setPeople(List<Person> people) {
+        this.people = people;
+    }
 }
