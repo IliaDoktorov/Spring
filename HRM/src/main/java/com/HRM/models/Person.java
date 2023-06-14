@@ -1,5 +1,7 @@
 package com.HRM.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -24,6 +26,7 @@ public class Person {
     @Email
     @Column(name = "email")
     private String email;
+    @JsonProperty
     @Column(name = "is_active")
     private boolean isActive; // represents working\fired functionality
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -33,6 +36,7 @@ public class Person {
     // Set insteadof List because List will cause removing all records from join table before insert new
     // It happens because List could contain duplicated values
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people", cascade = CascadeType.PERSIST)
+    @JsonBackReference
     private Set<Unit> units;
 
     public Person() {

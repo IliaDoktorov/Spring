@@ -30,45 +30,48 @@ public class PeopleService {
         List<Unit> units = getUnits(personDTO);
         Person person = convertToFullPerson(personDTO);
 
+        // bidirectional relationship
         units.forEach(unit -> {
-            System.out.println("BEFORE");
             unit.getPeople().add(person);
-            System.out.println("AFTER");
         });
 
-        System.out.println("BEFORE set units");
         person.setUnits(new HashSet<>(units));
-        System.out.println("AFTER set units");
 
-        System.out.println("BEFORE save");
         peopleRepository.save(person);
-        System.out.println("BEFORE save");
     }
 
     private Person convertToFullPerson(PersonDTO personDTO){
-        Optional<Position> position = positionRepository.findByName(personDTO.getPosition());
-        if (position.isEmpty())
-            throw new EntityNotFoundException();
-
         Person person = new Person();
+
+        if(personDTO.getPosition() != null) {
+            Optional<Position> position = positionRepository.findByName(personDTO.getPosition());
+            if (position.isEmpty())
+                throw new EntityNotFoundException();
+
+            person.setPosition(position.get());
+        }
+
+
 
         person.setFirstName(personDTO.getFirstName());
         person.setLastName(personDTO.getLastName());
         person.setEmail(personDTO.getEmail());
         person.setActive(personDTO.isActive());
-        person.setPosition(position.get());
+
 
         return person;
     }
 
     private List<Unit> getUnits(PersonDTO personDTO) {
         List<Unit> units = new ArrayList<>();
-        for(String unitName: personDTO.getUnits()){
-            Optional<Unit> unit = unitsRepository.findByName(unitName);
-            if(unit.isEmpty())
-                throw new EntityNotFoundException();
+        if(personDTO.getUnits() != null) {
+            for (String unitName : personDTO.getUnits()) {
+                Optional<Unit> unit = unitsRepository.findByName(unitName);
+                if (unit.isEmpty())
+                    throw new EntityNotFoundException();
 
-            units.add(unit.get());
+                units.add(unit.get());
+            }
         }
         return units;
     }

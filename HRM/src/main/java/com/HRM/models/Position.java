@@ -1,5 +1,6 @@
 package com.HRM.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,7 +15,8 @@ public class Position {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "position")
+    @OneToMany(mappedBy = "position", fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Person> people;
 
     public Position() {

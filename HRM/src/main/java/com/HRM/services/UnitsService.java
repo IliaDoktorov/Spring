@@ -1,6 +1,7 @@
 package com.HRM.services;
 
 import com.HRM.dto.UnitDTO;
+import com.HRM.models.Person;
 import com.HRM.models.Unit;
 import com.HRM.repositories.UnitsRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -8,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -49,5 +52,14 @@ public class UnitsService {
             }
         }
         return unitDTO;
+    }
+
+    public Set<Person> getPeoplePerUnit(String name) {
+        Optional<Unit> unitOptional = unitsRepository.findByName(name);
+
+        if(unitOptional.isEmpty())
+            throw new EntityNotFoundException();
+
+        return unitOptional.get().getPeople();
     }
 }

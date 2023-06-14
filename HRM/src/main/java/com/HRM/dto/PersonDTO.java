@@ -2,6 +2,7 @@ package com.HRM.dto;
 
 import com.HRM.models.Position;
 import com.HRM.models.Unit;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
@@ -18,6 +19,7 @@ public class PersonDTO {
     @Email
     private String email;
 
+    @JsonProperty
     private boolean isActive; // represents working\fired functionality
 
     private String position;
