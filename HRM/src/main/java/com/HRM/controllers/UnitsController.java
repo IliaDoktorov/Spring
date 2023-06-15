@@ -4,6 +4,8 @@ import com.HRM.dto.UnitDTO;
 import com.HRM.models.Person;
 import com.HRM.models.Unit;
 import com.HRM.services.UnitsService;
+import com.HRM.utils.ResponseEntry;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -18,8 +20,6 @@ import java.util.Set;
 public class UnitsController {
     @Autowired
     private UnitsService unitsService;
-
-    // get unit
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> add(@RequestBody Unit unit){
@@ -40,8 +40,7 @@ public class UnitsController {
     // update unit
 
     @ExceptionHandler
-    private ResponseEntity<HttpStatus> handleException(Exception ex){
-        System.out.println("NOT FOUND");
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    private ResponseEntity<ResponseEntry> handleNotFoundException(EntityNotFoundException ex){
+        return new ResponseEntity<>(new ResponseEntry(ex.getMessage(), System.currentTimeMillis()), HttpStatus.NOT_FOUND);
     }
 }

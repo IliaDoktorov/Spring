@@ -15,7 +15,7 @@ create table person(
     last_name varchar(30) not null,
     email varchar(30) unique not null,
     is_active boolean,
-    position int
+    position int references position(id) on delete set null
 )
 
 create table unit_person(

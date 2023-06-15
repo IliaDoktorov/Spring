@@ -20,7 +20,6 @@ public class UnitsService {
     private UnitsRepository unitsRepository;
 
     public void add(Unit unit){
-        System.out.println(unit);
 
         if(unit.getParentUnit() != null && !unitsRepository.findByName(unit.getParentUnit()).isPresent())
             throw new EntityNotFoundException();
@@ -58,7 +57,7 @@ public class UnitsService {
         Optional<Unit> unitOptional = unitsRepository.findByName(name);
 
         if(unitOptional.isEmpty())
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("Unit with name (" + name + ") not found");
 
         return unitOptional.get().getPeople();
     }

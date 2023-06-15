@@ -7,6 +7,7 @@ import com.HRM.models.Unit;
 import com.HRM.repositories.PeopleRepository;
 import com.HRM.repositories.PositionRepository;
 import com.HRM.repositories.UnitsRepository;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class PeopleService {
         List<Unit> units = getUnits(personDTO);
         Person person = convertToFullPerson(personDTO);
 
+        if(peopleRepository.findByemail(personDTO.getEmail()).isPresent())
+            throw new EntityExistsException("Person with email (" + personDTO.getEmail() + ") already exist");
+
         // bidirectional relationship
         units.forEach(unit -> {
             unit.getPeople().add(person);
@@ -46,12 +50,10 @@ public class PeopleService {
         if(personDTO.getPosition() != null) {
             Optional<Position> position = positionRepository.findByName(personDTO.getPosition());
             if (position.isEmpty())
-                throw new EntityNotFoundException();
+                throw new EntityNotFoundException("Position with name (" + personDTO.getPosition() + ") not found");
 
             person.setPosition(position.get());
         }
-
-
 
         person.setFirstName(personDTO.getFirstName());
         person.setLastName(personDTO.getLastName());
@@ -68,7 +70,7 @@ public class PeopleService {
             for (String unitName : personDTO.getUnits()) {
                 Optional<Unit> unit = unitsRepository.findByName(unitName);
                 if (unit.isEmpty())
-                    throw new EntityNotFoundException();
+                    throw new EntityNotFoundException("Unit with name (" + unitName + ") not found");
 
                 units.add(unit.get());
             }
