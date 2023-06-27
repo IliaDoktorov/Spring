@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -35,7 +36,7 @@ public class Person {
 
     // Set insteadof List because List will cause removing all records from join table before insert new
     // It happens because List could contain duplicated values
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people", cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people", cascade = CascadeType.ALL)
     @JsonBackReference
     private Set<Unit> units;
 
@@ -103,5 +104,18 @@ public class Person {
 
     public void setUnits(Set<Unit> units) {
         this.units = units;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return id == person.id && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(email, person.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email);
     }
 }

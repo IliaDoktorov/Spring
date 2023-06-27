@@ -27,6 +27,15 @@ public class PeopleService {
     @Autowired
     private UnitsRepository unitsRepository;
 
+    public PersonDTO get(int id){
+        Optional<Person> person = peopleRepository.findById(id);
+
+        if(person.isEmpty())
+            throw new EntityNotFoundException("Person with id (" + id + ") not found");
+
+        return convertToPersonDTO(person.get());
+    }
+
     public void add(PersonDTO personDTO){
         List<Unit> units = getUnits(personDTO);
         Person person = convertToFullPerson(personDTO);
@@ -38,10 +47,32 @@ public class PeopleService {
         units.forEach(unit -> {
             unit.getPeople().add(person);
         });
-
         person.setUnits(new HashSet<>(units));
 
         peopleRepository.save(person);
+    }
+
+    public void update(int id, PersonDTO personDTO) {
+        Optional<Person> person = peopleRepository.findById(id);
+
+        if(person.isEmpty())
+            throw new EntityNotFoundException("Person with id (" + id + ") not found");
+
+//        Person personFromDB = person.get();
+
+        Person personToUpdate = convertToFullPerson(personDTO);
+
+        List<Unit> units = getUnits(personDTO);
+
+        // bidirectional relationship
+        units.forEach(unit -> {
+            unit.getPeople().add(personToUpdate);
+        });
+        personToUpdate.setUnits(new HashSet<>(units));
+
+        personToUpdate.setId(id);
+
+        peopleRepository.save(personToUpdate);
     }
 
     private Person convertToFullPerson(PersonDTO personDTO){
@@ -64,6 +95,24 @@ public class PeopleService {
         return person;
     }
 
+    private PersonDTO convertToPersonDTO(Person person){
+        PersonDTO personDTO = new PersonDTO();
+
+        personDTO.setFirstName(person.getFirstName());
+        personDTO.setLastName(person.getLastName());
+        personDTO.setEmail(person.getEmail());
+        personDTO.setPosition(person.getPosition() != null ? person.getPosition().getName() : null);
+        personDTO.setActive(person.isActive());
+
+        if (!person.getUnits().isEmpty()){
+            personDTO.setUnits(new ArrayList<>());
+            person.getUnits().forEach(unit -> personDTO.getUnits().add(unit.getName()));
+        }
+
+        return personDTO;
+    }
+
+
     private List<Unit> getUnits(PersonDTO personDTO) {
         List<Unit> units = new ArrayList<>();
         if(personDTO.getUnits() != null) {
@@ -77,4 +126,6 @@ public class PeopleService {
         }
         return units;
     }
+
+
 }

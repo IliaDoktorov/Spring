@@ -19,8 +19,8 @@ create table person(
 )
 
 create table unit_person(
-    person_id int references person(id) on delete set null,
-    unit_name varchar(30) references unit("name") on delete set null
+    person_id int references person(id) on delete cascade,
+    unit_name varchar(30) references unit("name") on delete cascade 
 )
 
 create table position(
@@ -42,6 +42,8 @@ truncate table person cascade
 
 select * from unit_person
 truncate table unit_person
+
+delete from person where id=5
 
 
 
