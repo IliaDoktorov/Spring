@@ -61,4 +61,29 @@ public class UnitsService {
 
         return unitOptional.get().getPeople();
     }
+
+    public void delete(String name){
+        // get unit to remove
+        Optional<Unit> unitToRemove = unitsRepository.findByName(name);
+
+        if(unitToRemove.isEmpty())
+            throw new EntityNotFoundException("Unit with name (" + name + ") not found");
+
+        // get all units where current unit is parent
+        List<Unit> unitsToUpdate = unitsRepository.findAllByParentUnit(unitToRemove.get().getName());
+
+        // get parent unit for unitToRemove
+        Optional<Unit> parentUnit = unitsRepository.findByName(unitToRemove.get().getParentUnit());
+
+        // if parent unit is null - our unit is a root
+        if(parentUnit.isEmpty()){
+            // update all above units with null as parent
+            unitsToUpdate.forEach(unit -> unit.setParentUnit(null));
+        } else {
+            // update all above units with new parent
+            unitsToUpdate.forEach(unit -> unit.setParentUnit(parentUnit.get().getName()));
+        }
+
+        unitsRepository.deleteByName(unitToRemove.get().getName());
+    }
 }

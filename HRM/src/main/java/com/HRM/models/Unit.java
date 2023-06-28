@@ -2,18 +2,15 @@ package com.HRM.models;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "unit")
 public class Unit {
+
+    // name of a unit as identity, just because I can
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private int id;
-//    @Column(name = "name")
     private String name;
 
     @Column(name = "parent_unit")

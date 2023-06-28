@@ -9,13 +9,11 @@ import com.HRM.repositories.PositionRepository;
 import com.HRM.repositories.UnitsRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -58,8 +56,6 @@ public class PeopleService {
         if(person.isEmpty())
             throw new EntityNotFoundException("Person with id (" + id + ") not found");
 
-//        Person personFromDB = person.get();
-
         Person personToUpdate = convertToFullPerson(personDTO);
 
         List<Unit> units = getUnits(personDTO);
@@ -73,6 +69,15 @@ public class PeopleService {
         personToUpdate.setId(id);
 
         peopleRepository.save(personToUpdate);
+    }
+
+    public void delete(int id){
+        Optional<Person> person = peopleRepository.findById(id);
+
+        if(person.isEmpty())
+            throw new EntityNotFoundException("Person with id (" + id + ") not found");
+
+        peopleRepository.deleteById(id);
     }
 
     private Person convertToFullPerson(PersonDTO personDTO){

@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -36,7 +34,10 @@ public class Person {
 
     // Set insteadof List because List will cause removing all records from join table before insert new
     // It happens because List could contain duplicated values
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people", cascade = CascadeType.ALL)
+    //
+    // CascadeType.PERSIST, CascadeType.MERGE only. In case of CascadeType.ALL
+    // all records from unit_person table will be removed, if we remove some person
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JsonBackReference
     private Set<Unit> units;
 

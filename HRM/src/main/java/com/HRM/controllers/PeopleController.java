@@ -1,7 +1,6 @@
 package com.HRM.controllers;
 
 import com.HRM.dto.PersonDTO;
-import com.HRM.models.Person;
 import com.HRM.services.PeopleService;
 import com.HRM.utils.PersonValidationException;
 import com.HRM.utils.PersonValidator;
@@ -10,7 +9,6 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -48,6 +46,13 @@ public class PeopleController {
         personValidator.validate(personDTO, bindingResult);
 
         peopleService.update(id, personDTO);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/delete")
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") int id){
+        peopleService.delete(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

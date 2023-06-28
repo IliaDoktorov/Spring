@@ -37,7 +37,13 @@ public class UnitsController {
         return unitsService.getPeoplePerUnit(name);
     }
 
-    // update unit
+    @PostMapping("/{name}/delete")
+    public ResponseEntity<HttpStatus> delete(@PathVariable("name") String name){
+
+        unitsService.delete(name);
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 
     @ExceptionHandler
     private ResponseEntity<ResponseEntry> handleNotFoundException(EntityNotFoundException ex){
