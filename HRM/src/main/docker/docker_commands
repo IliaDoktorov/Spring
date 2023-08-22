@@ -1,0 +1,16 @@
+# create images from dockerfiles
+docker build -f Dockerfile_app . -t hrm
+docker build -f Dockerfile_db . -t database
+
+# create and launch containers from images with port mapping and -d(detach)
+docker run -p 5434:5432 --name testdatabase --pull missing -d database
+docker run -p 8080:8080 --name hrm_api --pull missing hrm:latest
+
+# create virtual network for api and db communication
+docker network create --subnet 172.20.0.0/16 hrm_net
+
+# connect db to virtual network with specified IP
+docker network connect --ip 172.20.0.5 hrm_net testdatabase
+
+# connect api to virtual network
+docker network connect hrm_net hrm_api
