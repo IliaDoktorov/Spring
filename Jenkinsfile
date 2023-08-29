@@ -6,13 +6,7 @@ pipeline {
     }
 
     stages {
-        stage('Clone') {
-			steps {
-				git 'https://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@github.com/IliaDoktorov/Spring.git'
-			}
-		}
-		
-		stage('Build') {
+        stage('Build') {
 			steps{
 				bat 'mvn -f HRM/pom.xml clean package && exit %%ERRORLEVEL%%'
 			}
