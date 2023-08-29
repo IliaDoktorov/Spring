@@ -18,10 +18,12 @@ pipeline {
 			}
 		}
 		
-		stage('Remove existing containers') {
+		stage('Clean up containers and images') {
 		    steps {
 		        bat 'docker container rm -f docker-testdatabase-1'
 				bat 'docker container rm -f docker-hrm-api-1'
+				bat "docker image rm docker-hrm-api'
+				bat "docker image rm docker-testdatabase'
 		    }
 		}
 		
