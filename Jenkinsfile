@@ -22,8 +22,8 @@ pipeline {
 		    steps {
 		        bat 'docker container rm -f docker-testdatabase-1'
 				bat 'docker container rm -f docker-hrm-api-1'
-				bat "docker image rm docker-hrm-api'
-				bat "docker image rm docker-testdatabase'
+				bat 'docker image rm docker-hrm-api'
+				bat 'docker image rm docker-testdatabase'
 		    }
 		}
 		
