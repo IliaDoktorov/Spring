@@ -18,16 +18,16 @@ pipeline {
 			}
 		}
 		
-		stage('Build Images') {
-		    steps {
-		        bat 'docker-compose -f HRM/docker/docker-compose.yml build'
-		    }
-		}
-		
 		stage('Remove existing containers') {
 		    steps {
 		        bat 'docker container rm -f docker-testdatabase-1'
 				bat 'docker container rm -f docker-hrm-api-1'
+		    }
+		}
+		
+		stage('Build Images') {
+		    steps {
+		        bat 'docker-compose -f HRM/docker/docker-compose.yml build'
 		    }
 		}
 		
